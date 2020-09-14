@@ -44,31 +44,8 @@ public class PlayerController : NetworkBehaviour
         if (!isLocalPlayer)
             return;
 
-        horizontal = _direction.x;
         vertical = _direction.y;
-
-        // Q and E cancel each other out, reducing the turn to zero
-        //if (Input.GetKey(KeyCode.A))
-        //    turn = Mathf.MoveTowards(turn, -maxTurnSpeed, turnSensitivity);
-        //if (Input.GetKey(KeyCode.E))
-        //    turn = Mathf.MoveTowards(turn, maxTurnSpeed, turnSensitivity);
-        //if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.E))
-        //    turn = Mathf.MoveTowards(turn, 0, turnSensitivity);
-        //if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.E))
-        //    turn = Mathf.MoveTowards(turn, 0, turnSensitivity);
-
-        if (isGrounded)
-            isFalling = false;
-
-        if ((isGrounded || !isFalling) && jumpSpeed < 1f && _startedJumping)
-        {
-            jumpSpeed = Mathf.Lerp(jumpSpeed, 1f, 0.5f);
-        }
-        else if (!isGrounded)
-        {
-            isFalling = true;
-            jumpSpeed = 0;
-        }
+        turn = Mathf.MoveTowards(turn, _direction.x, turnSensitivity);
     }
 
     void FixedUpdate()
@@ -78,7 +55,7 @@ public class PlayerController : NetworkBehaviour
 
         transform.Rotate(0f, turn * Time.fixedDeltaTime, 0f);
 
-        Vector3 direction = new Vector3(horizontal, jumpSpeed, vertical);
+        Vector3 direction = new Vector3(0, jumpSpeed, vertical);
         direction = Vector3.ClampMagnitude(direction, 1f);
         direction = transform.TransformDirection(direction);
         direction *= moveSpeed;
@@ -95,10 +72,5 @@ public class PlayerController : NetworkBehaviour
     private void OnMove(InputValue value)
     {
         _direction = value.Get<Vector2>();
-    }
-
-    private void OnJump(InputValue value)
-    {
-        _startedJumping = value.isPressed;
     }
 }

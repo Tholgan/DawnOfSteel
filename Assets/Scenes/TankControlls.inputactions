@@ -39,7 +39,7 @@
                     "id": "ef74d5f2-b65b-4b04-8b27-c44c6d40ef62",
                     "path": "2DVector",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "ScaleVector2(x=50)",
                     "groups": "",
                     "action": "Move",
                     "isComposite": true,
