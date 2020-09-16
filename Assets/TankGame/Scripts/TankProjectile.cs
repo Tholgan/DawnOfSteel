@@ -1,8 +1,8 @@
-﻿using Assets.TankGame.Scripts;
+﻿using Mirror;
 using System;
 using UnityEngine;
 
-namespace Mirror.Examples.Tanks
+namespace Assets.TankGame.Scripts
 {
     public class TankProjectile : NetworkBehaviour
     {
@@ -14,6 +14,14 @@ namespace Mirror.Examples.Tanks
         [Header("Game Stats")]
         public int damage;
         public GameObject source;
+
+        [SyncVar(hook = nameof(SetParticles))]
+        private bool _hasStarted;
+
+        void SetParticles(bool oldValue, bool newValue)
+        {
+            effect.GetComponent<ParticleSystem>().Play();
+        }
 
         public override void OnStartServer()
         {
@@ -47,8 +55,14 @@ namespace Mirror.Examples.Tanks
 
                 //update score on source
                 source.GetComponent<TankPlayerController>().score += damage;
-            }
 
+                _hasStarted = true;
+            } 
+        }
+
+        void Update()
+        {
+            if (!_hasStarted || effect.GetComponent<ParticleSystem>().IsAlive()) return;
             NetworkServer.Destroy(gameObject);
         }
     }

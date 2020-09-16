@@ -1,5 +1,4 @@
 ﻿using Mirror;
-using Mirror.Examples.Tanks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -60,6 +59,7 @@ namespace Assets.TankGame.Scripts
         public override void OnStartLocalPlayer()
         {
             characterController.enabled = true;
+            GetComponent<PlayerInput>().enabled = true;
 
             Camera.main.orthographic = false;
             Camera.main.transform.SetParent(transform);
@@ -78,61 +78,13 @@ namespace Assets.TankGame.Scripts
             }
         }
 
-        //void Update()
-        //{
-        //    if (!isLocalPlayer)
-        //        return;
-
-        //    vertical = _direction.y;
-        //    turn = Mathf.MoveTowards(turn, _direction.x, turnSensitivity);
-        //}
-
-        //void FixedUpdate()
-        //{
-        //    if (!isLocalPlayer || characterController == null)
-        //        return;
-
-        //    transform.Rotate(0f, turn * Time.fixedDeltaTime, 0f);
-
-        //    Vector3 direction = new Vector3(0, jumpSpeed, vertical);
-        //    direction = Vector3.ClampMagnitude(direction, 1f);
-        //    direction = transform.TransformDirection(direction);
-        //    direction *= moveSpeed;
-
-        //    if (jumpSpeed > 0)
-        //        characterController.Move(direction * Time.fixedDeltaTime);
-        //    else
-        //        characterController.SimpleMove(direction);
-
-        //    isGrounded = characterController.isGrounded;
-        //    velocity = characterController.velocity;
-
-
-        //}
-        //Region for Old Input System
         void Update()
         {
             if (!isLocalPlayer)
                 return;
 
-            horizontal = Input.GetAxis("Horizontal");
-            vertical = Input.GetAxis("Vertical");
-
-            // Q and E cancel each other out, reducing the turn to zero
-            if (Input.GetKey(KeyCode.Q))
-                turn = Mathf.MoveTowards(turn, -maxTurnSpeed, turnSensitivity);
-            if (Input.GetKey(KeyCode.D))
-                turn = Mathf.MoveTowards(turn, maxTurnSpeed, turnSensitivity);
-            if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.D))
-                turn = Mathf.MoveTowards(turn, 0, turnSensitivity);
-            if (!Input.GetKey(KeyCode.Q) && !Input.GetKey(KeyCode.D))
-                turn = Mathf.MoveTowards(turn, 0, turnSensitivity);
-
-            if (Input.GetKeyDown(KeyCode.Space) && Time.time > shootTime + shootWaitTime)
-            {
-                shootTime = Time.time;
-                CmdFire();
-            }
+            vertical = _direction.y;
+            turn = Mathf.MoveTowards(turn, _direction.x, turnSensitivity);
         }
 
         void FixedUpdate()
@@ -142,7 +94,7 @@ namespace Assets.TankGame.Scripts
 
             transform.Rotate(0f, turn * Time.fixedDeltaTime, 0f);
 
-            Vector3 direction = new Vector3(horizontal, jumpSpeed, vertical);
+            Vector3 direction = new Vector3(0, jumpSpeed, vertical);
             direction = Vector3.ClampMagnitude(direction, 1f);
             direction = transform.TransformDirection(direction);
             direction *= moveSpeed;
@@ -152,23 +104,25 @@ namespace Assets.TankGame.Scripts
             else
                 characterController.SimpleMove(direction);
 
+            isGrounded = characterController.isGrounded;
             velocity = characterController.velocity;
+
+
         }
 
-        //Used with New Input System
-        //private void OnMove(InputValue value)
-        //{
-        //    _direction = value.Get<Vector2>();
-        //}
+        private void OnMove(InputValue value)
+        {
+            _direction = value.Get<Vector2>();
+        }
 
-        //private void OnShoot()
-        //{
-        //    if (Time.time > shootTime + shootWaitTime)
-        //    {
-        //        shootTime = Time.time;
-        //        CmdFire();
-        //    }
-        //}
+        private void OnShoot()
+        {
+            if (Time.time > shootTime + shootWaitTime)
+            {
+                shootTime = Time.time;
+                CmdFire();
+            }
+        }
 
         [Command]
         void CmdFire()

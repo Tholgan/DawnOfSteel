@@ -115,7 +115,7 @@
                     "name": "",
                     "id": "90f69268-42b5-49a3-8ef3-7237a18d8d81",
                     "path": "<Keyboard>/space",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "Tank",
                     "action": "Shoot",
