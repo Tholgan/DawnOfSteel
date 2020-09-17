@@ -120,7 +120,7 @@ public class TankNetworkRoomManager : NetworkRoomManager
 #if UNITY_SERVER
             base.OnRoomServerPlayersReady();
 #else
-        showStartButton = true;
+        ServerChangeScene(GameplayScene);
 #endif
     }
 
