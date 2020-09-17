@@ -12,14 +12,18 @@ public class TankManager : MonoBehaviour
 {
     public GameObject MaxHealthBar;
     public GameObject HealthBar;
+    public GameObject GoToMenuButton;
     public GameObject ScoreTextLabel;
     public GameObject GameOverPanel;
+    public Text WinnerNameText;
 
     private bool IsGameReady;
     private TankPlayerController LocalPlayer;
     private bool IsGameOver;
 
     public List<TankPlayerController> players = new List<TankPlayerController>();
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -84,6 +88,7 @@ public class TankManager : MonoBehaviour
             if (!tank.isDead)
             {
                 alivePlayerCount++;
+                WinnerNameText.text = tank.playerName;
             }
         }
 
@@ -91,6 +96,7 @@ public class TankManager : MonoBehaviour
         {
             IsGameOver = true;
             GameOverPanel.SetActive(true);
+            GoToMenuButton.SetActive(true);
         }
     }
 
@@ -108,5 +114,10 @@ public class TankManager : MonoBehaviour
             return;
 
         LocalPlayer = ClientScene.localPlayer.GetComponent<TankPlayerController>();
+    }
+
+    public void GoBackToMainScene()
+    {
+        NetworkManager.singleton.StopClient();
     }
 }

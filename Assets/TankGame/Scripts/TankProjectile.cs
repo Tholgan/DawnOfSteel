@@ -15,13 +15,8 @@ namespace Assets.TankGame.Scripts
         public int damage;
         public GameObject source;
 
-        [SyncVar(hook = nameof(SetParticles))]
+        [SyncVar]
         private bool _hasStarted;
-
-        void SetParticles(bool oldValue, bool newValue)
-        {
-            effect.GetComponent<ParticleSystem>().Play();
-        }
 
         public override void OnStartServer()
         {
@@ -56,14 +51,21 @@ namespace Assets.TankGame.Scripts
                 //update score on source
                 source.GetComponent<TankPlayerController>().score += damage;
 
-                _hasStarted = true;
-            } 
+                RpcInstantiateExplosion();
+                NetworkServer.Destroy(gameObject);
+            }
+
+            if (co.tag.Equals("Level") && co.gameObject != source)
+            {
+                RpcInstantiateExplosion();
+                NetworkServer.Destroy(gameObject);
+            }
         }
 
-        void Update()
+        [ClientRpc]
+        void RpcInstantiateExplosion()
         {
-            if (!_hasStarted || effect.GetComponent<ParticleSystem>().IsAlive()) return;
-            NetworkServer.Destroy(gameObject);
+            Instantiate(effect, transform.position, transform.rotation);
         }
     }
 }

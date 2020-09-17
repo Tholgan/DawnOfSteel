@@ -50,7 +50,10 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// This is called on the server when a client disconnects.
     /// </summary>
     /// <param name="conn">The connection that disconnected.</param>
-    public override void OnRoomServerDisconnect(NetworkConnection conn) { }
+    public override void OnRoomServerDisconnect(NetworkConnection conn)
+    {
+        if(roomSlots.Count == 0) StopServer();
+    }
 
     /// <summary>
     /// This is called on the server when a networked scene finishes loading.
