@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.TankGame.Scripts;
+using UnityEngine;
 using Mirror;
 
 /*
@@ -105,6 +106,16 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <returns>False to not allow this player to replace the room player.</returns>
     public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnection conn, GameObject roomPlayer, GameObject gamePlayer)
     {
+        var player = gamePlayer.GetComponent<TankPlayerController>();
+        if (string.IsNullOrEmpty(PlayerName))
+        {
+            player.playerName = "PLAYER" + Random.Range(1, 99);
+        }
+        else
+        {
+            player.playerName = PlayerName;
+        }
+
         return base.OnRoomServerSceneLoadedForPlayer(conn, roomPlayer, gamePlayer);
     }
 
@@ -113,6 +124,8 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <para>The default implementation of this function uses ServerChangeScene() to switch to the game player scene. By implementing this callback you can customize what happens when all the players in the room are ready, such as adding a countdown or a confirmation for a group leader.</para>
     /// </summary>
     bool showStartButton;
+    public string PlayerName { get; set; }
+    public GameObject playerNamePanel;
 
     public override void OnRoomServerPlayersReady()
     {
@@ -120,6 +133,7 @@ public class TankNetworkRoomManager : NetworkRoomManager
 #if UNITY_SERVER
             base.OnRoomServerPlayersReady();
 #else
+        playerNamePanel.SetActive(false);
         ServerChangeScene(GameplayScene);
 #endif
     }
@@ -150,7 +164,7 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <summary>
     /// This is a hook to allow custom behaviour when the game client enters the room.
     /// </summary>
-    public override void OnRoomClientEnter() { }
+    public override void OnRoomClientEnter() {}
 
     /// <summary>
     /// This is a hook to allow custom behaviour when the game client exits the room.
@@ -161,7 +175,10 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// This is called on the client when it connects to server.
     /// </summary>
     /// <param name="conn">The connection that connected.</param>
-    public override void OnRoomClientConnect(NetworkConnection conn) { }
+    public override void OnRoomClientConnect(NetworkConnection conn)
+    {
+        playerNamePanel.SetActive(true);
+    }
 
     /// <summary>
     /// This is called on the client when disconnected from a server.
