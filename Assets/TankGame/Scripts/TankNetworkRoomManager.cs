@@ -177,7 +177,6 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <param name="conn">The connection that connected.</param>
     public override void OnRoomClientConnect(NetworkConnection conn)
     {
-        playerNamePanel.SetActive(true);
     }
 
     /// <summary>

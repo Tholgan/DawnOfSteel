@@ -14,6 +14,8 @@ using Mirror;
 /// </summary>
 public class TankNetworkRoomPlayer : NetworkRoomPlayer
 {
+    public GameObject playerNamePanel;
+
     #region Start & Stop Callbacks
 
     /// <summary>
@@ -70,6 +72,7 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     /// </summary>
     public override void OnClientEnterRoom()
     {
+        playerNamePanel.SetActive(true);
     }
 
     /// <summary>
