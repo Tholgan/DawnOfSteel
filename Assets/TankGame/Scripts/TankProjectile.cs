@@ -58,6 +58,7 @@ namespace Assets.TankGame.Scripts
             if (co.tag.Equals("Level") && co.gameObject != source)
             {
                 RpcInstantiateExplosion();
+                co.attachedRigidbody.AddForce(transform.forward, ForceMode.Impulse);
                 NetworkServer.Destroy(gameObject);
             }
         }
