@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
+using UnityEngine.UI;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Components/NetworkRoomPlayer.html
@@ -15,6 +16,10 @@ using Mirror;
 public class TankNetworkRoomPlayer : NetworkRoomPlayer
 {
     public GameObject playerNamePanel;
+    public InputField playerNameText;
+
+    [SyncVar]
+    public string playerName;
 
     #region Start & Stop Callbacks
 
@@ -47,7 +52,9 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     /// Called when the local player object has been set up.
     /// <para>This happens after OnStartClient(), as it is triggered by an ownership message from the server. This is an appropriate place to activate components or functionality that should only be active for the local player, such as cameras and input.</para>
     /// </summary>
-    public override void OnStartLocalPlayer() { }
+    public override void OnStartLocalPlayer()
+    {
+    }
 
     /// <summary>
     /// This is invoked on behaviours that have authority, based on context and <see cref="NetworkIdentity.hasAuthority">NetworkIdentity.hasAuthority</see>.
@@ -72,13 +79,17 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     /// </summary>
     public override void OnClientEnterRoom()
     {
-        playerNamePanel.SetActive(true);
+        if(isLocalPlayer)
+            playerNamePanel.SetActive(true);
     }
 
     /// <summary>
     /// This is a hook that is invoked on all player objects when exiting the room.
     /// </summary>
-    public override void OnClientExitRoom() { }
+    public override void OnClientExitRoom()
+    {
+        playerNamePanel.SetActive(false);
+    }
 
     #endregion
 
@@ -96,7 +107,9 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     /// <para>This function is called when the a client player calls SendReadyToBeginMessage() or SendNotReadyToBeginMessage().</para>
     /// </summary>
     /// <param name="readyState">Whether the player is ready or not.</param>
-    public override void ReadyStateChanged(bool _, bool readyState) { }
+    public override void ReadyStateChanged(bool _, bool readyState)
+    {
+    }
 
     #endregion
 
@@ -108,4 +121,28 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     }
 
     #endregion
+
+
+    public void SendReadyToServer()
+    {
+        if (!isLocalPlayer)
+            return;
+
+        CmdReady(playerNameText.text);
+        playerNamePanel.SetActive(false);
+    }
+
+    [Command]
+    void CmdReady(string playername)
+    {
+        if (string.IsNullOrEmpty(playername))
+        {
+            playerName = "PLAYER" + Random.Range(1, 99);
+        }
+        else
+        {
+            playerName = playername;
+        }
+
+    }
 }

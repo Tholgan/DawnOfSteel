@@ -13,7 +13,7 @@ public class TankManager : MonoBehaviour
     public GameObject MaxHealthBar;
     public GameObject HealthBar;
     public GameObject GoToMenuButton;
-    public GameObject ScoreTextLabel;
+    public Text ScoreTextLabel;
     public GameObject GameOverPanel;
     public Text WinnerNameText;
 
@@ -72,7 +72,7 @@ public class TankManager : MonoBehaviour
                 }
             }
             HealthBar.SetActive(true);
-            ScoreTextLabel.SetActive(true);
+            ScoreTextLabel.gameObject.SetActive(true);
         }
     }
 
@@ -105,6 +105,7 @@ public class TankManager : MonoBehaviour
         var healthBar = HealthBar.GetComponent<RectTransform>();
         healthBar.sizeDelta = new Vector2((float)LocalPlayer.health / 100 * MaxHealthBar.GetComponent<RectTransform>().sizeDelta.x,
             healthBar.sizeDelta.y);
+        ScoreTextLabel.text = "Score : " + LocalPlayer.score;
     }
 
     void FindLocalTank()

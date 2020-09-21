@@ -27,7 +27,7 @@ namespace Mirror.Weaver
         public static bool UnityLogEnabled = true;
 
         // holds the result status of our latest Weave operation
-        // NOTE: WeaveFailed is critical to unit tests, but isn't used for anything else. 
+        // NOTE: WeaveFailed is critical to unit tests, but isn't used for anything else.
         public static bool WeaveFailed { get; private set; }
 
         // warning message handler that also calls OnWarningMethod delegate

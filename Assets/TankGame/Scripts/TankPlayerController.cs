@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Assets.TankGame.Scripts
 {
@@ -41,6 +42,7 @@ namespace Assets.TankGame.Scripts
 
         public bool isDead => health <= 0;
         public TextMesh nameText;
+        public Text playerNameText;
 
 
         void OnValidate()
@@ -54,6 +56,8 @@ namespace Assets.TankGame.Scripts
         void Start()
         {
             boxCollider.enabled = isServer;
+            if(isLocalPlayer)
+                playerNameText.text = playerName;
         }
 
         public override void OnStartLocalPlayer()
