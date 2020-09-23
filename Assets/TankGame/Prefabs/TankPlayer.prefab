@@ -292,6 +292,7 @@ GameObject:
   - component: {fileID: 7988936269323986952}
   - component: {fileID: 3458793104954253475}
   - component: {fileID: 4569736908714134507}
+  - component: {fileID: 6083004469784986134}
   m_Layer: 0
   m_Name: TankPlayer
   m_TagString: Player
@@ -386,6 +387,7 @@ MonoBehaviour:
   isTouched: 0
   nameText: {fileID: 0}
   playerNameText: {fileID: 3334865941229728591}
+  animator: {fileID: 6083004469784986134}
 --- !u!143 &7988936269323986952
 CharacterController:
   m_ObjectHideFlags: 0
@@ -448,6 +450,25 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.63, y: 0.56, z: 1.09}
   m_Center: {x: 0, y: 0.38, z: 0.03}
+--- !u!95 &6083004469784986134
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6587136765510611754}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 38b49695fc0a4418bbc350f2366660c5, type: 3}
+  m_Controller: {fileID: 9100000, guid: a7211483bbd794b6d85ed88576e7d85c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &7350846924625921241
 GameObject:
   m_ObjectHideFlags: 0

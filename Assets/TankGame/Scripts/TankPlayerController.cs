@@ -43,7 +43,7 @@ namespace Assets.TankGame.Scripts
         public bool isDead => health <= 0;
         public TextMesh nameText;
         public Text playerNameText;
-
+        public Animator animator;
 
         void OnValidate()
         {
@@ -102,6 +102,7 @@ namespace Assets.TankGame.Scripts
             direction = Vector3.ClampMagnitude(direction, 1f);
             direction = transform.TransformDirection(direction);
             direction *= moveSpeed;
+            animator.SetBool("Moving", direction != Vector3.zero);
 
             if (jumpSpeed > 0)
                 characterController.Move(direction * Time.fixedDeltaTime);
@@ -115,7 +116,7 @@ namespace Assets.TankGame.Scripts
         }
 
         private void OnMove(InputValue value)
-        {
+        { 
             _direction = value.Get<Vector2>();
         }
 
@@ -134,6 +135,13 @@ namespace Assets.TankGame.Scripts
             GameObject projectile = Instantiate(projectilePrefab, projectileMount.position, transform.rotation);
             projectile.GetComponent<TankProjectile>().source = gameObject;
             NetworkServer.Spawn(projectile);
+            RpcOnFire();
+        }
+
+        [ClientRpc]
+        void RpcOnFire()
+        {
+            animator.SetTrigger("Shoot");
         }
     }
 }
