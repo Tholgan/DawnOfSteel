@@ -396,7 +396,6 @@ MonoBehaviour:
   OnServerDisconnected:
     m_PersistentCalls:
       m_Calls: []
-  port: 7777
   NoDelay: 1
   serverMaxMessageSize: 16384
   serverMaxReceivesPerTick: 10000
@@ -441,7 +440,9 @@ MonoBehaviour:
   GameplayScene: Assets/TankGame/Scenes/GameScene.unity
   _allPlayersReady: 0
   roomSlots: []
-  playerNamePanel: {fileID: 0}
+  Levels:
+  - {fileID: 4327482007758381435, guid: 97ebefe52ca32ff4f81a0c2ae0600635, type: 3}
+  - {fileID: 421512641733095626, guid: d130b797984aee04ca4c1b2fd0fd72f2, type: 3}
 --- !u!4 &1982038802
 Transform:
   m_ObjectHideFlags: 0
