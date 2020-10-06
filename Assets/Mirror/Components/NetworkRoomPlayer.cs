@@ -160,7 +160,7 @@ namespace Mirror
             }
         }
 
-        void DrawPlayerReadyState()
+        public virtual void DrawPlayerReadyState()
         {
             GUILayout.BeginArea(new Rect(20f + (index * 100), 200f, 90f, 130f));
 

@@ -20,6 +20,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "FlameThrower",
+                    "type": "Button",
+                    "id": "5aecc904-e907-4201-a61f-2a41f01c8a52",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MultipleShoot",
+                    "type": "Button",
+                    "id": "134508f4-8eb7-4f5a-98fa-a7674f44108d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -119,6 +135,50 @@
                     "processors": "",
                     "groups": "Tank",
                     "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b412f921-5560-4a0f-b57b-b30526f7b8d8",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "Tank",
+                    "action": "FlameThrower",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "de9d3da9-fb04-49a0-9a95-cfedf66fbf6b",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Tank",
+                    "action": "MultipleShoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0565e9ed-ae63-4e7a-937f-b8fb8510ba78",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Tank",
+                    "action": "MultipleShoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e131f29a-5097-4e66-af6b-c88bb5606719",
+                    "path": "<XInputController>/buttonSouth",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "Tank",
+                    "action": "MultipleShoot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

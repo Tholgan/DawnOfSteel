@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -26,13 +27,17 @@ namespace Assets.TankGame.Scripts
 
         [Header("Firing")]
         public GameObject projectilePrefab;
-        public Transform projectileMount;
+        public Transform projectileMountMain;
+        public Transform projectileMountLeft;
+        public Transform projectileMountRight;
         public float shootWaitTime = 1f;
         public float shootTime;
+        public GameObject multipleFiringAddon;
+        public GameObject FlameThrower;
 
         [Header("Game Stats")]
         [SyncVar]
-        public int health;
+        public float health;
         [SyncVar]
         public int score;
         [SyncVar]
@@ -56,8 +61,8 @@ namespace Assets.TankGame.Scripts
         void Start()
         {
             boxCollider.enabled = isServer;
-            if(isLocalPlayer)
-                playerNameText.text = playerName;
+            playerNameText.text = playerName;
+            RpcSetNormalShoot();
         }
 
         public override void OnStartLocalPlayer()
@@ -111,8 +116,6 @@ namespace Assets.TankGame.Scripts
 
             isGrounded = characterController.isGrounded;
             velocity = characterController.velocity;
-
-
         }
 
         private void OnMove(InputValue value)
@@ -129,10 +132,50 @@ namespace Assets.TankGame.Scripts
             }
         }
 
+        private void OnFlameThrower()
+        {
+            CmdFlameThrower();
+        }
+
+        private void OnMultipleShoot()
+        {
+            if (Time.time > shootTime + shootWaitTime)
+            {
+                shootTime = Time.time;
+                CmdMultiShoot();
+            }
+        }
+
+        [Command]
+        void CmdMultiShoot()
+        {
+            GameObject projectile1 = Instantiate(projectilePrefab, projectileMountMain.position, transform.rotation);
+            GameObject projectile2 = Instantiate(projectilePrefab, projectileMountLeft.position, transform.rotation);
+            GameObject projectile3 = Instantiate(projectilePrefab, projectileMountRight.position, transform.rotation);
+
+            var projectiles = new List<GameObject>() { projectile1, projectile2, projectile3 };
+
+            foreach (GameObject projectile in projectiles)
+            {
+                projectile.GetComponent<TankProjectile>().source = gameObject;
+                projectile.GetComponent<TankProjectile>().damage = 10;
+
+                NetworkServer.Spawn(projectile);
+            }
+            RpcOnFire();
+        }
+
+        [Command]
+        void CmdFlameThrower()
+        {
+            FlameThrower.SetActive(!FlameThrower.activeInHierarchy);
+            RpcFlameThrowerOn();
+        }
+
         [Command]
         void CmdFire()
         {
-            GameObject projectile = Instantiate(projectilePrefab, projectileMount.position, transform.rotation);
+            GameObject projectile = Instantiate(projectilePrefab, projectileMountMain.position, transform.rotation);
             projectile.GetComponent<TankProjectile>().source = gameObject;
             NetworkServer.Spawn(projectile);
             RpcOnFire();
@@ -142,6 +185,39 @@ namespace Assets.TankGame.Scripts
         void RpcOnFire()
         {
             animator.SetTrigger("Shoot");
+        }
+
+        [ClientRpc]
+        void RpcFlameThrowerOn()
+        {
+            FlameThrower.SetActive(!FlameThrower.activeInHierarchy);
+        }
+
+        [ClientRpc]
+        public void RpcSetMultipleShoot()
+        {
+            var playerInput = GetComponent<PlayerInput>();
+            playerInput.actions.FindAction("MultipleShoot").Enable();
+            playerInput.actions.FindAction("Shoot").Disable();
+            playerInput.actions.FindAction("FlameThrower").Disable();
+        }
+
+        [ClientRpc]
+        public void RpcSetFlameThrower()
+        {
+            var playerInput = GetComponent<PlayerInput>();
+            playerInput.actions.FindAction("FlameThrower").Enable();
+            playerInput.actions.FindAction("Shoot").Disable();
+            playerInput.actions.FindAction("MultipleShoot").Disable();
+        }
+
+        [ClientRpc]
+        public void RpcSetNormalShoot()
+        {
+            var playerInput = GetComponent<PlayerInput>();
+            playerInput.actions.FindAction("Shoot").Enable();
+            playerInput.actions.FindAction("FlameThrower").Disable();
+            playerInput.actions.FindAction("MultipleShoot").Disable();
         }
     }
 }

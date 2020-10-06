@@ -16,12 +16,16 @@ public class TankManager : MonoBehaviour
     public Text ScoreTextLabel;
     public GameObject GameOverPanel;
     public Text WinnerNameText;
+    public Text TimerText;
 
     private bool IsGameReady;
     private TankPlayerController LocalPlayer;
     private bool IsGameOver;
 
     public List<TankPlayerController> players = new List<TankPlayerController>();
+    private float timer = 15f;
+    private float timerTime = 0;
+
 
 
 
@@ -90,20 +94,27 @@ public class TankManager : MonoBehaviour
                 alivePlayerCount++;
                 WinnerNameText.text = tank.playerName;
             }
+            if (tank.isDead && tank.gameObject.activeInHierarchy)
+                tank.gameObject.SetActive(false);
         }
 
         if (alivePlayerCount == 1)
         {
             IsGameOver = true;
             GameOverPanel.SetActive(true);
-            GoToMenuButton.SetActive(true);
+            TimerText.text = "Going to room in : " + ((int)timer).ToString();
+            if (timerTime == 0)
+                timerTime = Time.realtimeSinceStartup;
+            if (Time.realtimeSinceStartup - timerTime == timer)
+                GoBackToRoom();
+            //GoToMenuButton.SetActive(true);
         }
     }
 
     private void UpdateStats()
     {
         var healthBar = HealthBar.GetComponent<RectTransform>();
-        healthBar.sizeDelta = new Vector2((float)LocalPlayer.health / 100 * MaxHealthBar.GetComponent<RectTransform>().sizeDelta.x,
+        healthBar.sizeDelta = new Vector2(LocalPlayer.health / 100 * MaxHealthBar.GetComponent<RectTransform>().sizeDelta.x,
             healthBar.sizeDelta.y);
         ScoreTextLabel.text = "Score : " + LocalPlayer.score;
     }
@@ -117,8 +128,8 @@ public class TankManager : MonoBehaviour
         LocalPlayer = ClientScene.localPlayer.GetComponent<TankPlayerController>();
     }
 
-    public void GoBackToMainScene()
+    public void GoBackToRoom()
     {
-        NetworkManager.singleton.StopClient();
+        NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
     }
 }
