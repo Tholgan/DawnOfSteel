@@ -151,6 +151,28 @@
                 },
                 {
                     "name": "",
+                    "id": "46469675-6375-4962-aecc-eb897ea10634",
+                    "path": "<XInputController>/buttonSouth",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "Tank",
+                    "action": "FlameThrower",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0bd0b567-febd-4d0b-8f82-e4f586573c51",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "Tank",
+                    "action": "FlameThrower",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "de9d3da9-fb04-49a0-9a95-cfedf66fbf6b",
                     "path": "<Keyboard>/space",
                     "interactions": "",

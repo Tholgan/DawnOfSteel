@@ -1,24 +1,24 @@
-﻿using Assets.TankGame.Scripts;
-using Mirror;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Mirror;
 using UnityEngine;
 
-public class FlameThrowerPowerUp : NetworkBehaviour
+namespace Assets.TankGame.Scripts
 {
-    private void Update()
+    public class FlameThrowerPowerUp : NetworkBehaviour
     {
-        transform.Rotate(Vector3.left, Space.Self);
-        transform.Rotate(Vector3.up, Space.World);
-    }
-
-    [ServerCallback]
-    void OnTriggerEnter(Collider co)
-    {
-        if (co.gameObject.tag.Equals("Player"))
+        private void Update()
         {
-            co.GetComponent<TankPlayerController>().RpcSetFlameThrower();
-            NetworkServer.Destroy(gameObject);
+            transform.Rotate(Vector3.left, Space.Self);
+            transform.Rotate(Vector3.up, Space.World);
+        }
+
+        [ServerCallback]
+        void OnTriggerEnter(Collider co)
+        {
+            if (co.gameObject.tag.Equals("Player"))
+            {
+                co.GetComponent<TankPlayerController>().RpcSetFlameThrower();
+                NetworkServer.Destroy(gameObject);
+            }
         }
     }
 }

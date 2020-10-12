@@ -25,15 +25,7 @@ public class TankManager : MonoBehaviour
     public List<TankPlayerController> players = new List<TankPlayerController>();
     private float timer = 15f;
     private float timerTime = 0;
-
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    private bool gameEnded;
 
     // Update is called once per frame
     void Update()
@@ -102,12 +94,6 @@ public class TankManager : MonoBehaviour
         {
             IsGameOver = true;
             GameOverPanel.SetActive(true);
-            TimerText.text = "Going to room in : " + ((int)timer).ToString();
-            if (timerTime == 0)
-                timerTime = Time.realtimeSinceStartup;
-            if (Time.realtimeSinceStartup - timerTime == timer)
-                GoBackToRoom();
-            //GoToMenuButton.SetActive(true);
         }
     }
 
@@ -117,6 +103,13 @@ public class TankManager : MonoBehaviour
         healthBar.sizeDelta = new Vector2(LocalPlayer.health / 100 * MaxHealthBar.GetComponent<RectTransform>().sizeDelta.x,
             healthBar.sizeDelta.y);
         ScoreTextLabel.text = "Score : " + LocalPlayer.score;
+        if (!IsGameOver) return;
+        TimerText.text = "Going to room in : " + (int)timer;
+        if (timerTime <= 0 && IsGameOver)
+            timerTime = Time.realtimeSinceStartup;
+        if (Time.realtimeSinceStartup - timerTime >= timer)
+            GoBackToRoom();
+
     }
 
     void FindLocalTank()
@@ -130,6 +123,7 @@ public class TankManager : MonoBehaviour
 
     public void GoBackToRoom()
     {
+        gameEnded = true;
         NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
     }
 }
