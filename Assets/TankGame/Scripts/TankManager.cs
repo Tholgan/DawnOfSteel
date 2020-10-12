@@ -6,6 +6,7 @@ using Mirror;
 using Mirror.Examples.Tanks;
 using UnityEngine;
 using UnityEngine.InputSystem.HID;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TankManager : MonoBehaviour
@@ -104,8 +105,8 @@ public class TankManager : MonoBehaviour
             healthBar.sizeDelta.y);
         ScoreTextLabel.text = "Score : " + LocalPlayer.score;
         if (!IsGameOver) return;
-        TimerText.text = "Going to room in : " + (int)timer;
-        if (timerTime <= 0 && IsGameOver)
+        TimerText.text = "Going to room in : " + ((int)timerTime - (int)Time.realtimeSinceStartup + (int)timer);
+        if (timerTime <= 0)
             timerTime = Time.realtimeSinceStartup;
         if (Time.realtimeSinceStartup - timerTime >= timer)
             GoBackToRoom();
