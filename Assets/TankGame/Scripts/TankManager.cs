@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.HID;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TankManager : MonoBehaviour
+public class TankManager : NetworkBehaviour
 {
     public GameObject MaxHealthBar;
     public GameObject HealthBar;
@@ -26,7 +26,7 @@ public class TankManager : MonoBehaviour
     public List<TankPlayerController> players = new List<TankPlayerController>();
     private float timer = 15f;
     private float timerTime = 0;
-    private bool gameEnded;
+    private bool gameTimerEnded;
 
     // Update is called once per frame
     void Update()
@@ -44,6 +44,9 @@ public class TankManager : MonoBehaviour
             {
                 UpdateStats();
             }
+
+            BackToRoomCheck();
+
         }
         else
         {
@@ -51,6 +54,20 @@ public class TankManager : MonoBehaviour
             IsGameReady = false;
             LocalPlayer = null;
         }
+    }
+
+    void BackToRoomCheck()
+    {
+        if (!IsGameOver)
+            return;
+        if (timerTime <= 0)
+            timerTime = Time.realtimeSinceStartup;
+        gameTimerEnded = Time.realtimeSinceStartup - timerTime >= timer;
+#if UNITY_SERVER
+        if (gameTimerEnded && IsGameOver)
+            GoBackToRoom();
+        Debug.Log("Time calculated is : " + ((int)timerTime - (int)Time.realtimeSinceStartup));
+#endif
     }
 
     void GameReadyCheck()
@@ -106,10 +123,6 @@ public class TankManager : MonoBehaviour
         ScoreTextLabel.text = "Score : " + LocalPlayer.score;
         if (!IsGameOver) return;
         TimerText.text = "Going to room in : " + ((int)timerTime - (int)Time.realtimeSinceStartup + (int)timer);
-        if (timerTime <= 0)
-            timerTime = Time.realtimeSinceStartup;
-        if (Time.realtimeSinceStartup - timerTime >= timer)
-            GoBackToRoom();
 
     }
 
@@ -122,9 +135,9 @@ public class TankManager : MonoBehaviour
         LocalPlayer = ClientScene.localPlayer.GetComponent<TankPlayerController>();
     }
 
+    [Server]
     public void GoBackToRoom()
     {
-        gameEnded = true;
         NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
     }
 }
