@@ -68,7 +68,30 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// This is called on the server when a networked scene finishes loading.
     /// </summary>
     /// <param name="sceneName">Name of the new scene.</param>
-    public override void OnRoomServerSceneChanged(string sceneName) { }
+    public override void OnRoomServerSceneChanged(string sceneName)
+    {
+        if (sceneName == RoomScene)
+        {
+            foreach (NetworkRoomPlayer roomPlayer in roomSlots)
+            {
+                if (roomPlayer == null)
+                    continue;
+                NetworkIdentity identity = roomPlayer.GetComponent<NetworkIdentity>();
+
+                NetworkIdentity playerController = identity.connectionToClient.identity;
+
+                if (NetworkServer.active)
+                {
+                    roomPlayer.GetComponent<NetworkRoomPlayer>().readyToBegin = false;
+                    NetworkServer.ReplacePlayerForConnection(identity.connectionToClient, roomPlayer.gameObject);
+                }
+
+                NetworkServer.Destroy(playerController.gameObject);
+            }
+
+            allPlayersReady = false;
+        }
+    }
 
     /// <summary>
     /// This allows customization of the creation of the room-player object on the server.

@@ -432,8 +432,11 @@ MonoBehaviour:
   playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 1481447459545542631, guid: da6d64a854e55c74a8ee9212c1724235, type: 3}
+  - {fileID: 8477371100351638507, guid: c290eeb0f69a81146bfab46c1ce35cf0, type: 3}
+  - {fileID: 8355333093209790897, guid: 306b7e0e76d2dab4981a4a053c2912bf, type: 3}
+  - {fileID: 2659432515796231032, guid: e4585e7728c2bee43b9e5df72267998f, type: 3}
   showRoomGUI: 1
-  minPlayers: 1
+  minPlayers: 2
   roomPlayerPrefab: {fileID: 4300639747619171871, guid: 95b46319542123a4fb691870407f02dd,
     type: 3}
   RoomScene: Assets/TankGame/Scenes/RoomScene.unity
