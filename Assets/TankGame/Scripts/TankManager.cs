@@ -63,7 +63,7 @@ public class TankManager : NetworkBehaviour
         if (timerTime <= 0)
             timerTime = Time.realtimeSinceStartup;
         gameTimerEnded = Time.realtimeSinceStartup - timerTime >= timer;
-#if UNITY_SERVER
+#if UNITY_SERVER || UNITY_EDITOR
         if (gameTimerEnded && IsGameOver)
             GoBackToRoom();
         Debug.Log("Time calculated is : " + ((int)timerTime - (int)Time.realtimeSinceStartup));
