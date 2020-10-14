@@ -396,6 +396,7 @@ MonoBehaviour:
   OnServerDisconnected:
     m_PersistentCalls:
       m_Calls: []
+  port: 7777
   NoDelay: 1
   serverMaxMessageSize: 16384
   serverMaxReceivesPerTick: 10000
@@ -435,6 +436,7 @@ MonoBehaviour:
   - {fileID: 8477371100351638507, guid: c290eeb0f69a81146bfab46c1ce35cf0, type: 3}
   - {fileID: 8355333093209790897, guid: 306b7e0e76d2dab4981a4a053c2912bf, type: 3}
   - {fileID: 2659432515796231032, guid: e4585e7728c2bee43b9e5df72267998f, type: 3}
+  - {fileID: 0}
   showRoomGUI: 1
   minPlayers: 2
   roomPlayerPrefab: {fileID: 4300639747619171871, guid: 95b46319542123a4fb691870407f02dd,

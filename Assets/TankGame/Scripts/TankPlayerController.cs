@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,6 +24,8 @@ namespace Assets.TankGame.Scripts
         public float jumpSpeed;
         public bool isGrounded = true;
         public Vector3 velocity;
+
+
         private Vector2 _direction;
 
         [Header("Firing")]
@@ -46,9 +49,14 @@ namespace Assets.TankGame.Scripts
         [SyncVar] public bool isTouched;
 
         public bool isDead => health <= 0;
+
+        [SyncVar]
+        public bool isTouchedByFlame;
+
         public TextMesh nameText;
         public Text playerNameText;
         public Animator animator;
+        public GameObject smokeObject;
 
         void OnValidate()
         {
@@ -116,10 +124,11 @@ namespace Assets.TankGame.Scripts
 
             isGrounded = characterController.isGrounded;
             velocity = characterController.velocity;
+            smokeObject.SetActive(isTouchedByFlame);
         }
 
         private void OnMove(InputValue value)
-        { 
+        {
             _direction = value.Get<Vector2>();
         }
 
