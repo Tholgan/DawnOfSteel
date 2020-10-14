@@ -1,5 +1,9 @@
-﻿using UnityEngine;
+﻿using Assets.TankGame.Scripts;
 using Mirror;
+using UnityEngine;
+using System;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Components/NetworkRoomManager.html
@@ -28,7 +32,12 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <summary>
     /// This is called on the server when the server is stopped - including when a host is stopped.
     /// </summary>
-    public override void OnRoomStopServer() { }
+    public override void OnRoomStopServer()
+    {
+        if (gameObject.scene.name == "DontDestroyOnLoad" && !string.IsNullOrEmpty(offlineScene) && SceneManager.GetActiveScene().path != offlineScene)
+            SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());
+        base.OnRoomStopServer();
+    }
 
     /// <summary>
     /// This is called on the host when a host is started.
@@ -52,14 +61,18 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <param name="conn">The connection that disconnected.</param>
     public override void OnRoomServerDisconnect(NetworkConnection conn)
     {
-        if(roomSlots.Count == 0) StopServer();
+        if(roomSlots.Capacity == 0 || roomSlots.Count <= 0) StopServer();
     }
 
     /// <summary>
     /// This is called on the server when a networked scene finishes loading.
     /// </summary>
     /// <param name="sceneName">Name of the new scene.</param>
-    public override void OnRoomServerSceneChanged(string sceneName) { }
+    public override void OnRoomServerSceneChanged(string sceneName)
+    {
+
+    }
+
 
     /// <summary>
     /// This allows customization of the creation of the room-player object on the server.
@@ -79,6 +92,7 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <param name="conn">The connection the player object is for.</param>
     /// <param name="roomPlayer">The room player object for this connection.</param>
     /// <returns>A new GamePlayer object.</returns>
+
     public override GameObject OnRoomServerCreateGamePlayer(NetworkConnection conn, GameObject roomPlayer)
     {
         return base.OnRoomServerCreateGamePlayer(conn, roomPlayer);
@@ -105,6 +119,11 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <returns>False to not allow this player to replace the room player.</returns>
     public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnection conn, GameObject roomPlayer, GameObject gamePlayer)
     {
+        var playerController = gamePlayer.GetComponent<TankPlayerController>();
+        var roomController = roomPlayer.GetComponent<TankNetworkRoomPlayer>();
+        roomController.playerNamePanel.SetActive(false);
+        playerController.playerName = roomController.playerName;
+
         return base.OnRoomServerSceneLoadedForPlayer(conn, roomPlayer, gamePlayer);
     }
 
@@ -120,7 +139,7 @@ public class TankNetworkRoomManager : NetworkRoomManager
 #if UNITY_SERVER
             base.OnRoomServerPlayersReady();
 #else
-        showStartButton = true;
+        ServerChangeScene(GameplayScene);
 #endif
     }
 
@@ -135,6 +154,7 @@ public class TankNetworkRoomManager : NetworkRoomManager
 
             ServerChangeScene(GameplayScene);
         }
+
     }
 
     /// <summary>
@@ -150,7 +170,7 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <summary>
     /// This is a hook to allow custom behaviour when the game client enters the room.
     /// </summary>
-    public override void OnRoomClientEnter() { }
+    public override void OnRoomClientEnter() {}
 
     /// <summary>
     /// This is a hook to allow custom behaviour when the game client exits the room.
@@ -161,7 +181,9 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// This is called on the client when it connects to server.
     /// </summary>
     /// <param name="conn">The connection that connected.</param>
-    public override void OnRoomClientConnect(NetworkConnection conn) { }
+    public override void OnRoomClientConnect(NetworkConnection conn)
+    {
+    }
 
     /// <summary>
     /// This is called on the client when disconnected from a server.
@@ -178,7 +200,12 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <summary>
     /// This is called on the client when the client stops.
     /// </summary>
-    public override void OnRoomStopClient() { }
+    public override void OnRoomStopClient()
+    {
+        if (gameObject.scene.name == "DontDestroyOnLoad" && !string.IsNullOrEmpty(offlineScene) && SceneManager.GetActiveScene().path != offlineScene)
+            SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());
+        base.OnRoomStopClient();
+    }
 
     /// <summary>
     /// This is called on the client when the client is finished loading a new networked scene.
@@ -193,4 +220,9 @@ public class TankNetworkRoomManager : NetworkRoomManager
     public override void OnRoomClientAddPlayerFailed() { }
 
     #endregion
+
+    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
+    {
+
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mirror;
+using UnityEngine.UI;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Components/NetworkRoomPlayer.html
@@ -14,6 +15,12 @@ using Mirror;
 /// </summary>
 public class TankNetworkRoomPlayer : NetworkRoomPlayer
 {
+    public GameObject playerNamePanel;
+    public InputField playerNameText;
+
+    [SyncVar]
+    public string playerName;
+
     #region Start & Stop Callbacks
 
     /// <summary>
@@ -45,7 +52,11 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     /// Called when the local player object has been set up.
     /// <para>This happens after OnStartClient(), as it is triggered by an ownership message from the server. This is an appropriate place to activate components or functionality that should only be active for the local player, such as cameras and input.</para>
     /// </summary>
-    public override void OnStartLocalPlayer() { }
+    public override void OnStartLocalPlayer()
+    {
+        if (isLocalPlayer)
+            playerNamePanel.SetActive(true);
+    }
 
     /// <summary>
     /// This is invoked on behaviours that have authority, based on context and <see cref="NetworkIdentity.hasAuthority">NetworkIdentity.hasAuthority</see>.
@@ -68,12 +79,17 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     /// This is a hook that is invoked on all player objects when entering the room.
     /// <para>Note: isLocalPlayer is not guaranteed to be set until OnStartLocalPlayer is called.</para>
     /// </summary>
-    public override void OnClientEnterRoom() { }
+    public override void OnClientEnterRoom()
+    {
+    }
 
     /// <summary>
     /// This is a hook that is invoked on all player objects when exiting the room.
     /// </summary>
-    public override void OnClientExitRoom() { }
+    public override void OnClientExitRoom()
+    {
+        playerNamePanel.SetActive(false);
+    }
 
     #endregion
 
@@ -91,7 +107,9 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     /// <para>This function is called when the a client player calls SendReadyToBeginMessage() or SendNotReadyToBeginMessage().</para>
     /// </summary>
     /// <param name="readyState">Whether the player is ready or not.</param>
-    public override void ReadyStateChanged(bool _, bool readyState) { }
+    public override void ReadyStateChanged(bool _, bool readyState)
+    {
+    }
 
     #endregion
 
@@ -102,5 +120,44 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
         base.OnGUI();
     }
 
+    public override void DrawPlayerReadyState()
+    {
+        GUILayout.BeginArea(new Rect(20f + (index * 100), 200f, 90f, 130f));
+
+        GUILayout.Label(playerName);
+
+        if (readyToBegin)
+            GUILayout.Label("Ready");
+        else
+            GUILayout.Label("Not Ready");
+
+        if (((isServer && index > 0) || isServerOnly) && GUILayout.Button("REMOVE"))
+        {
+            // This button only shows on the Host for all players other than the Host
+            // Host and Players can't remove themselves (stop the client instead)
+            // Host can kick a Player this way.
+            GetComponent<NetworkIdentity>().connectionToClient.Disconnect();
+        }
+
+        GUILayout.EndArea();
+    }
+
     #endregion
+
+
+    public void SendReadyToServer()
+    {
+        if (!isLocalPlayer)
+            return;
+
+        CmdReady(playerNameText.text);
+        playerNamePanel.SetActive(false);
+    }
+
+    [Command]
+    void CmdReady(string playername)
+    {
+        playerName = playername;
+
+    }
 }

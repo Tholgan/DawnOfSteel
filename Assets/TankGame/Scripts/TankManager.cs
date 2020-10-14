@@ -6,30 +6,27 @@ using Mirror;
 using Mirror.Examples.Tanks;
 using UnityEngine;
 using UnityEngine.InputSystem.HID;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class TankManager : MonoBehaviour
+public class TankManager : NetworkBehaviour
 {
     public GameObject MaxHealthBar;
     public GameObject HealthBar;
     public GameObject GoToMenuButton;
-    public GameObject ScoreTextLabel;
+    public Text ScoreTextLabel;
     public GameObject GameOverPanel;
     public Text WinnerNameText;
+    public Text TimerText;
 
     private bool IsGameReady;
     private TankPlayerController LocalPlayer;
     private bool IsGameOver;
 
     public List<TankPlayerController> players = new List<TankPlayerController>();
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    private float timer = 15f;
+    private float timerTime = 0;
+    private bool gameTimerEnded;
 
     // Update is called once per frame
     void Update()
@@ -47,6 +44,9 @@ public class TankManager : MonoBehaviour
             {
                 UpdateStats();
             }
+
+            BackToRoomCheck();
+
         }
         else
         {
@@ -54,6 +54,20 @@ public class TankManager : MonoBehaviour
             IsGameReady = false;
             LocalPlayer = null;
         }
+    }
+
+    void BackToRoomCheck()
+    {
+        if (!IsGameOver)
+            return;
+        if (timerTime <= 0)
+            timerTime = Time.realtimeSinceStartup;
+        gameTimerEnded = Time.realtimeSinceStartup - timerTime >= timer;
+#if UNITY_SERVER || UNITY_EDITOR
+        if (gameTimerEnded && IsGameOver)
+            GoBackToRoom();
+        Debug.Log("Time calculated is : " + ((int)timerTime - (int)Time.realtimeSinceStartup));
+#endif
     }
 
     void GameReadyCheck()
@@ -72,7 +86,7 @@ public class TankManager : MonoBehaviour
                 }
             }
             HealthBar.SetActive(true);
-            ScoreTextLabel.SetActive(true);
+            ScoreTextLabel.gameObject.SetActive(true);
         }
     }
 
@@ -90,21 +104,26 @@ public class TankManager : MonoBehaviour
                 alivePlayerCount++;
                 WinnerNameText.text = tank.playerName;
             }
+            if (tank.isDead && tank.gameObject.activeInHierarchy)
+                tank.gameObject.SetActive(false);
         }
 
         if (alivePlayerCount == 1)
         {
             IsGameOver = true;
             GameOverPanel.SetActive(true);
-            GoToMenuButton.SetActive(true);
         }
     }
 
     private void UpdateStats()
     {
         var healthBar = HealthBar.GetComponent<RectTransform>();
-        healthBar.sizeDelta = new Vector2((float)LocalPlayer.health / 100 * MaxHealthBar.GetComponent<RectTransform>().sizeDelta.x,
+        healthBar.sizeDelta = new Vector2(LocalPlayer.health / 100 * MaxHealthBar.GetComponent<RectTransform>().sizeDelta.x,
             healthBar.sizeDelta.y);
+        ScoreTextLabel.text = "Score : " + LocalPlayer.score;
+        if (!IsGameOver) return;
+        TimerText.text = "Going to room in : " + ((int)timerTime - (int)Time.realtimeSinceStartup + (int)timer);
+
     }
 
     void FindLocalTank()
@@ -116,8 +135,10 @@ public class TankManager : MonoBehaviour
         LocalPlayer = ClientScene.localPlayer.GetComponent<TankPlayerController>();
     }
 
-    public void GoBackToMainScene()
+    [Server]
+    public void GoBackToRoom()
     {
-        NetworkManager.singleton.StopClient();
+        NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
+        NetworkServer.Destroy(gameObject);
     }
 }

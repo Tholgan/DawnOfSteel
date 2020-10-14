@@ -10,8 +10,14 @@ public class TankDeadZone : NetworkBehaviour
     [ServerCallback]
     void OnTriggerEnter(Collider co)
     {
-        co.GetComponent<TankPlayerController>().health = 0;
-        co.GetComponent<TankPlayerController>().enabled = false;
-
+        if (co.tag == "Player")
+        {
+            co.GetComponent<TankPlayerController>().health = 0;
+            //co.GetComponent<TankPlayerController>().enabled = false;
+        }
+        else
+        {
+            Destroy(co.gameObject);
+        }
     }
 }
