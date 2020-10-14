@@ -358,12 +358,15 @@ namespace Mirror
                     // find the game-player object for this connection, and destroy it
                     NetworkIdentity identity = roomPlayer.GetComponent<NetworkIdentity>();
 
+                    NetworkIdentity playerController = identity.connectionToClient.identity;
+
                     if (NetworkServer.active)
                     {
                         // re-add the room object
                         roomPlayer.GetComponent<NetworkRoomPlayer>().readyToBegin = false;
                         NetworkServer.ReplacePlayerForConnection(identity.connectionToClient, roomPlayer.gameObject);
                     }
+                    NetworkServer.Destroy(playerController.gameObject);
                 }
 
                 allPlayersReady = false;

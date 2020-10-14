@@ -382,6 +382,7 @@ GameObject:
   - component: {fileID: 734606224}
   - component: {fileID: 734606223}
   - component: {fileID: 734606227}
+  - component: {fileID: 734606228}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -493,6 +494,22 @@ MonoBehaviour:
   WinnerNameText: {fileID: 2088830666}
   TimerText: {fileID: 10477461}
   players: []
+--- !u!114 &734606228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 734606222}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 2997749543
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1 &809109712
 GameObject:
   m_ObjectHideFlags: 0

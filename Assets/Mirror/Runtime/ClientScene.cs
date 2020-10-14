@@ -236,7 +236,7 @@ namespace Mirror
         }
 
         /// <summary>
-        /// Valids Prefab then adds it to prefabs dictionary 
+        /// Valids Prefab then adds it to prefabs dictionary
         /// </summary>
         /// <param name="prefab">NetworkIdentity on Prefab GameObject</param>
         static void RegisterPrefabIdentity(NetworkIdentity prefab)
@@ -885,6 +885,14 @@ namespace Mirror
         internal static void OnObjectSpawnFinished(ObjectSpawnFinishedMessage _)
         {
             logger.Log("SpawnFinished");
+
+            foreach (KeyValuePair<uint, NetworkIdentity> kvp in NetworkIdentity.spawned)
+            {
+                if (kvp.Value == null)
+                {
+                    NetworkIdentity.spawned.Remove(kvp.Key);
+                }
+            }
 
             // paul: Initialize the objects in the same order as they were initialized
             // in the server.   This is important if spawned objects

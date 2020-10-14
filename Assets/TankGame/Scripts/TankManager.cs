@@ -139,5 +139,6 @@ public class TankManager : NetworkBehaviour
     public void GoBackToRoom()
     {
         NetworkManager.singleton.ServerChangeScene(NetworkManager.singleton.onlineScene);
+        NetworkServer.Destroy(gameObject);
     }
 }
