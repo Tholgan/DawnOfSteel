@@ -231,7 +231,7 @@ namespace Mirror
                 }
         }
 
-        void CallOnClientExitRoom()
+        internal void CallOnClientExitRoom()
         {
             OnRoomClientExit();
             foreach (NetworkRoomPlayer player in roomSlots)
@@ -330,6 +330,7 @@ namespace Mirror
                 OnRoomServerAddPlayer(conn);
         }
 
+        [Server]
         public void RecalculateRoomPlayerIndices()
         {
             if (roomSlots.Count > 0)
@@ -358,15 +359,12 @@ namespace Mirror
                     // find the game-player object for this connection, and destroy it
                     NetworkIdentity identity = roomPlayer.GetComponent<NetworkIdentity>();
 
-                    NetworkIdentity playerController = identity.connectionToClient.identity;
-
                     if (NetworkServer.active)
                     {
                         // re-add the room object
                         roomPlayer.GetComponent<NetworkRoomPlayer>().readyToBegin = false;
                         NetworkServer.ReplacePlayerForConnection(identity.connectionToClient, roomPlayer.gameObject);
                     }
-                    NetworkServer.Destroy(playerController.gameObject);
                 }
 
                 allPlayersReady = false;
