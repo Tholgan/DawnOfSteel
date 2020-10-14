@@ -1,7 +1,5 @@
 // vis2k: GUILayout instead of spacey += ...; removed Update hotkeys to avoid
 // confusion if someone accidentally presses one.
-
-using System;
 using System.ComponentModel;
 using UnityEngine;
 
@@ -104,7 +102,6 @@ namespace Mirror
                 }
                 else
                 {
-                    TelepathyTransport.port = Convert.ToUInt16(GUILayout.TextField(TelepathyTransport.port.ToString()));
                     if (GUILayout.Button("Server Only")) manager.StartServer();
                 }
             }

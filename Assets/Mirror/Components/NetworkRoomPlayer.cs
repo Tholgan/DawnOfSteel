@@ -56,7 +56,9 @@ namespace Mirror
                     DontDestroyOnLoad(gameObject);
 
                 room.roomSlots.Add(this);
-                room.RecalculateRoomPlayerIndices();
+
+                if (NetworkServer.active)
+                    room.RecalculateRoomPlayerIndices();
 
                 if (NetworkClient.active)
                     room.CallOnClientEnterRoom();
@@ -69,8 +71,10 @@ namespace Mirror
         {
             if (NetworkClient.active && NetworkManager.singleton is NetworkRoomManager room)
             {
+                // only need to call this on client as server removes it before object is destroyed
                 room.roomSlots.Remove(this);
-                room.RecalculateRoomPlayerIndices();
+
+                room.CallOnClientExitRoom();
             }
         }
 
@@ -160,7 +164,7 @@ namespace Mirror
             }
         }
 
-        void DrawPlayerReadyState()
+        public virtual void DrawPlayerReadyState()
         {
             GUILayout.BeginArea(new Rect(20f + (index * 100), 200f, 90f, 130f));
 

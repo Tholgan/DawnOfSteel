@@ -422,7 +422,7 @@ MonoBehaviour:
   onlineScene: Assets/TankGame/Scenes/RoomScene.unity
   transport: {fileID: 1982038800}
   networkAddress: localhost
-  maxConnections: 4
+  maxConnections: 8
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
@@ -432,17 +432,17 @@ MonoBehaviour:
   playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 1481447459545542631, guid: da6d64a854e55c74a8ee9212c1724235, type: 3}
+  - {fileID: 8477371100351638507, guid: c290eeb0f69a81146bfab46c1ce35cf0, type: 3}
+  - {fileID: 8355333093209790897, guid: 306b7e0e76d2dab4981a4a053c2912bf, type: 3}
+  - {fileID: 2659432515796231032, guid: e4585e7728c2bee43b9e5df72267998f, type: 3}
   showRoomGUI: 1
-  minPlayers: 1
+  minPlayers: 2
   roomPlayerPrefab: {fileID: 4300639747619171871, guid: 95b46319542123a4fb691870407f02dd,
     type: 3}
   RoomScene: Assets/TankGame/Scenes/RoomScene.unity
   GameplayScene: Assets/TankGame/Scenes/GameScene.unity
   _allPlayersReady: 0
   roomSlots: []
-  Levels:
-  - {fileID: 4327482007758381435, guid: 97ebefe52ca32ff4f81a0c2ae0600635, type: 3}
-  - {fileID: 421512641733095626, guid: d130b797984aee04ca4c1b2fd0fd72f2, type: 3}
 --- !u!4 &1982038802
 Transform:
   m_ObjectHideFlags: 0

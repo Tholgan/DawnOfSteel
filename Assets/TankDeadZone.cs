@@ -13,7 +13,7 @@ public class TankDeadZone : NetworkBehaviour
         if (co.tag == "Player")
         {
             co.GetComponent<TankPlayerController>().health = 0;
-            co.GetComponent<TankPlayerController>().enabled = false;
+            //co.GetComponent<TankPlayerController>().enabled = false;
         }
         else
         {

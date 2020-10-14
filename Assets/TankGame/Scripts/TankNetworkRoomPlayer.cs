@@ -54,6 +54,8 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     /// </summary>
     public override void OnStartLocalPlayer()
     {
+        if (isLocalPlayer)
+            playerNamePanel.SetActive(true);
     }
 
     /// <summary>
@@ -79,8 +81,6 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     /// </summary>
     public override void OnClientEnterRoom()
     {
-        if(isLocalPlayer)
-            playerNamePanel.SetActive(true);
     }
 
     /// <summary>
@@ -120,6 +120,28 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
         base.OnGUI();
     }
 
+    public override void DrawPlayerReadyState()
+    {
+        GUILayout.BeginArea(new Rect(20f + (index * 100), 200f, 90f, 130f));
+
+        GUILayout.Label(playerName);
+
+        if (readyToBegin)
+            GUILayout.Label("Ready");
+        else
+            GUILayout.Label("Not Ready");
+
+        if (((isServer && index > 0) || isServerOnly) && GUILayout.Button("REMOVE"))
+        {
+            // This button only shows on the Host for all players other than the Host
+            // Host and Players can't remove themselves (stop the client instead)
+            // Host can kick a Player this way.
+            GetComponent<NetworkIdentity>().connectionToClient.Disconnect();
+        }
+
+        GUILayout.EndArea();
+    }
+
     #endregion
 
 
@@ -135,14 +157,7 @@ public class TankNetworkRoomPlayer : NetworkRoomPlayer
     [Command]
     void CmdReady(string playername)
     {
-        if (string.IsNullOrEmpty(playername))
-        {
-            playerName = "PLAYER" + Random.Range(1, 99);
-        }
-        else
-        {
-            playerName = playername;
-        }
+        playerName = playername;
 
     }
 }

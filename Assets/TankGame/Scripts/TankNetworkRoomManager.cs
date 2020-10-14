@@ -3,6 +3,7 @@ using Mirror;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Components/NetworkRoomManager.html
@@ -31,7 +32,12 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <summary>
     /// This is called on the server when the server is stopped - including when a host is stopped.
     /// </summary>
-    public override void OnRoomStopServer() { }
+    public override void OnRoomStopServer()
+    {
+        if (gameObject.scene.name == "DontDestroyOnLoad" && !string.IsNullOrEmpty(offlineScene) && SceneManager.GetActiveScene().path != offlineScene)
+            SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());
+        base.OnRoomStopServer();
+    }
 
     /// <summary>
     /// This is called on the host when a host is started.
@@ -62,7 +68,11 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// This is called on the server when a networked scene finishes loading.
     /// </summary>
     /// <param name="sceneName">Name of the new scene.</param>
-    public override void OnRoomServerSceneChanged(string sceneName) { }
+    public override void OnRoomServerSceneChanged(string sceneName)
+    {
+
+    }
+
 
     /// <summary>
     /// This allows customization of the creation of the room-player object on the server.
@@ -190,7 +200,12 @@ public class TankNetworkRoomManager : NetworkRoomManager
     /// <summary>
     /// This is called on the client when the client stops.
     /// </summary>
-    public override void OnRoomStopClient() { }
+    public override void OnRoomStopClient()
+    {
+        if (gameObject.scene.name == "DontDestroyOnLoad" && !string.IsNullOrEmpty(offlineScene) && SceneManager.GetActiveScene().path != offlineScene)
+            SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());
+        base.OnRoomStopClient();
+    }
 
     /// <summary>
     /// This is called on the client when the client is finished loading a new networked scene.
@@ -205,4 +220,9 @@ public class TankNetworkRoomManager : NetworkRoomManager
     public override void OnRoomClientAddPlayerFailed() { }
 
     #endregion
+
+    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling)
+    {
+
+    }
 }
