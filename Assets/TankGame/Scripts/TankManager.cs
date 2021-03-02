@@ -105,7 +105,7 @@ public class TankManager : NetworkBehaviour
                 WinnerNameText.text = tank.playerName;
             }
             if (tank.isDead && tank.gameObject.activeInHierarchy)
-                tank.gameObject.SetActive(false);
+                tank.Disable();
         }
 
         if (alivePlayerCount == 1)
