@@ -42,7 +42,7 @@
                 {
                     "name": "",
                     "id": "1faff03c-51f6-4cb9-956a-f5b61fcd2254",
-                    "path": "<XInputController>/leftStick",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "ScaleVector2(x=100)",
                     "groups": "Tank",
@@ -104,6 +104,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "cdcc534d-d6aa-4041-9846-8bcac939172d",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Tank",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
@@ -224,6 +235,11 @@
                 },
                 {
                     "devicePath": "<Gamepad>",
+                    "isOptional": true,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Touchscreen>",
                     "isOptional": true,
                     "isOR": false
                 }
