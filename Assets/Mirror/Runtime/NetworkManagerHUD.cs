@@ -1,5 +1,7 @@
 // vis2k: GUILayout instead of spacey += ...; removed Update hotkeys to avoid
 // confusion if someone accidentally presses one.
+
+using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 
@@ -33,6 +35,12 @@ namespace Mirror
         /// </summary>
         public int offsetY;
 
+        public GUIStyle _style;
+
+        public Canvas _canvas;
+
+        private List<GUILayoutOption> _layoutOptions;
+
         void Awake()
         {
             manager = GetComponent<NetworkManager>();
@@ -43,7 +51,18 @@ namespace Mirror
             if (!showGUI)
                 return;
 
-            GUILayout.BeginArea(new Rect(10 + offsetX, 40 + offsetY, 215, 9999));
+            _style = new GUIStyle
+            {
+
+            };
+
+            _layoutOptions = new List<GUILayoutOption>
+            {
+                GUILayout.Height(Screen.height * 0.1f)
+            };
+
+            GUILayout.BeginArea(new Rect(10 + offsetX, 40 + offsetY, Screen.width - 10 - offsetX, Screen.height - 40 - offsetY), _style);
+
             if (!NetworkClient.isConnected && !NetworkServer.active)
             {
                 StartButtons();
@@ -56,7 +75,7 @@ namespace Mirror
             // client ready
             if (NetworkClient.isConnected && !ClientScene.ready)
             {
-                if (GUILayout.Button("Client Ready"))
+                if (GUILayout.Button("Client Ready", _layoutOptions.ToArray()))
                 {
                     ClientScene.Ready(NetworkClient.connection);
 
@@ -76,34 +95,14 @@ namespace Mirror
         {
             if (!NetworkClient.active)
             {
-                // Server + Client
-                if (Application.platform != RuntimePlatform.WebGLPlayer)
-                {
-                    if (GUILayout.Button("Host (Server + Client)"))
-                    {
-                        manager.StartHost();
-                    }
-                }
-
                 // Client + IP
                 GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Client"))
+                if (GUILayout.Button("Client", _layoutOptions.ToArray()))
                 {
                     manager.StartClient();
                 }
-                manager.networkAddress = GUILayout.TextField(manager.networkAddress);
+                manager.networkAddress = GUILayout.TextField(manager.networkAddress, _layoutOptions.ToArray());
                 GUILayout.EndHorizontal();
-
-                // Server Only
-                if (Application.platform == RuntimePlatform.WebGLPlayer)
-                {
-                    // cant be a server in webgl build
-                    GUILayout.Box("(  WebGL cannot be server  )");
-                }
-                else
-                {
-                    if (GUILayout.Button("Server Only")) manager.StartServer();
-                }
             }
             else
             {
